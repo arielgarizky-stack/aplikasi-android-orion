@@ -451,7 +451,7 @@ class _HomePageFuturisticState extends State<HomePageFuturistic> {
             SizedBox(
               height: 150,
               child: PageView(
-                controller: PageController(viewportFraction: 0.92),
+                controller : PageController(viewportFraction: 0.92),
                 children: [
                   _bannerCard(
                     context,
@@ -902,6 +902,8 @@ class _HomePageFuturisticState extends State<HomePageFuturistic> {
     );
   }
 }
+
+// ================= animasi banner gerak gerak =======================
 class MarqueeBanner extends StatefulWidget {
   final List<String> images;
   final void Function(String path)? onTap;
@@ -983,7 +985,7 @@ class _MarqueeBannerState extends State<MarqueeBanner> {
   }
 }
 
-// ===== RESPONSIVE TYPE PAGE =====
+// ==================== RESPONSIVE TYPE PAGE ==========================
 class TypePage extends StatefulWidget {
   final String brandName;
   final String deviceCategory;
@@ -1129,7 +1131,7 @@ class _TypePageState extends State<TypePage> {
   }
 }
 
-/* --------------- type brand gawai page ------------- */
+/* -------------------- type brand gawai page ------------------- */
 class TypeDetailPage extends StatefulWidget {
   final String brandName;
   final String componentName;
@@ -1349,12 +1351,14 @@ class _TypeDetailPageState extends State<TypeDetailPage> {
 }
 
 // =====================  Bagian Release & Update =====================
+
 class _UpdateListSection extends StatefulWidget {
   const _UpdateListSection({Key? key}) : super(key: key);
 
   @override
   State<_UpdateListSection> createState() => _UpdateListSectionState();
 }
+
 
 class _UpdateListSectionState extends State<_UpdateListSection> {
   int _expandedIndex = -1;
@@ -1478,10 +1482,8 @@ class _UpdateListSectionState extends State<_UpdateListSection> {
 }
 
 
+// ===================  Video Player Page (Inline) =======================
 
-// ================================
-// 🎬 Video Player Page (Inline)
-// ================================
 class VideoPlayerPage extends StatefulWidget {
   final String title;
   final String url;
