@@ -78,7 +78,7 @@ class _SettingsPageState extends State<SettingsPage> {
                 borderRadius: BorderRadius.circular(14)),
             child: ListTile(
               leading: const Icon(Icons.language),
-              title: const Text("Language"),
+              title: const Text("Pilih bahasa"),
               subtitle: Text(selectedLanguage),
               trailing: const Icon(Icons.arrow_forward_ios, size: 18),
               onTap: () {
