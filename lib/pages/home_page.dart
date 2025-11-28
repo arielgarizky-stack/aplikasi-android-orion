@@ -1218,62 +1218,44 @@ class _TypeDetailPageState extends State<TypeDetailPage> {
               ),
             ),
           ),
-
-
           Container(
             padding: const EdgeInsets.all(12),
             color: const Color(0xFF1E1E1E),
-            child: Wrap(
-              spacing: 8,
-              runSpacing: 8,
-              children: categories.map((cat) {
-                final isSelected = selectedCategory == cat;
-
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      if (isSelected) {
-                        selectedCategory = null;
-                      } else {
-                        selectedCategory = cat;
-                      }
-                    });
-                  },
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 200),
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 8,
-                      horizontal: 12,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? const Color(0xFF0A192F)
-                          : Colors.grey.shade800,
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(
-                        color: isSelected
-                            ? (categoryColors[cat] ?? Colors.white)
-                            : Colors.transparent,
-                        width: 1.2,
-                      ),
-                    ),
-                    child: Text(
-                      cat,
-                      style: TextStyle(
-                        color: isSelected ? Colors.white : Colors.grey.shade300,
-                        fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-                      ),
-                    ),
-                  ),
-                );
-              }).toList(),
+            child: Container(
+              padding: const EdgeInsets.symmetric(horizontal: 12),
+              decoration: BoxDecoration(
+                color: const Color(0xFF2E2E2E),
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: Colors.white24, width: 1),
+              ),
+              child: DropdownButton<String>(
+                value: selectedCategory,
+                hint: const Text(
+                  'Pilih Category',
+                  style: TextStyle(color: Colors.white70),
+                ),
+                dropdownColor: const Color(0xFF2A2A2A),
+                iconEnabledColor: Colors.white,
+                underline: const SizedBox(),
+                style: const TextStyle(color: Colors.white),
+                items: categories.map((cat) {
+                  return DropdownMenuItem(
+                    value: cat,
+                    child: Text(cat),
+                  );
+                }).toList(),
+                onChanged: (value) {
+                  setState(() {
+                    selectedCategory = value;
+                  });
+                },
+              ),
             ),
           ),
         ],
       ),
     );
   }
-
   List<Widget> _buildSvgOverlaysForCategory(String category) {
     final key = category;
     final list = multiSvgMap[key];
