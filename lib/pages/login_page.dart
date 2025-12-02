@@ -256,10 +256,9 @@ class _LoginPageState extends State<LoginPage> {
             children: [
 
               const SizedBox(height: 6),
-
               // Title
               Text(
-                "Selamat Datang",
+                "Welcome!",
                 textAlign: TextAlign.center,
                 style: theme.textTheme.headlineSmall?.copyWith(
                   fontWeight: FontWeight.bold,

@@ -4,6 +4,8 @@ import 'package:orionschematic/pages/brand_page.dart';
 import 'package:orionschematic/pages/howto_use_page.dart';
 import 'package:orionschematic/pages/banner_detail.dart';
 import 'package:orionschematic/pages/folder_detail.dart';
+import 'package:orionschematic/pages/pdf_viewer_page.dart';
+import 'package:orionschematic/pages/pdf_viewer_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert'; // ⬅️ untuk jsonDecode
 import 'profile_page.dart';
@@ -1268,6 +1270,35 @@ class _TypePageState extends State<TypePage> {
                             );
                           },
                         ),
+                        ListTile(
+                          dense: true,
+                          contentPadding: EdgeInsets.zero,
+                          leading: Icon(
+                            Icons.picture_as_pdf,
+                            size: 22,
+                            color: theme.brightness == Brightness.dark
+                                ? Colors.redAccent
+                                : Colors.red,
+                          ),
+                          title: const Text(
+                            'Guideline (PDF)',
+                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => PdfViewerRouter(assetPath: 'assets/pdf/Layout.pdf'),
+                              ),
+                            );
+
+
+
+
+                          },
+                        ),
+
+
                       ],
                     ),
                   ),
