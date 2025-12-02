@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 /* --------------------------------------------------
-    PRODUCT MODEL
+PRODUCT MODEL
 -------------------------------------------------- */
 class Product {
   final String name;
@@ -13,7 +13,7 @@ class Product {
 }
 
 /* --------------------------------------------------
-    PRODUK LIST
+PRODUK LIST
 -------------------------------------------------- */
 final List<Product> products = [
   Product(name: "DJI", image: "assets/brands/DJI.png", price: 5000),
@@ -25,7 +25,7 @@ final List<Product> products = [
 ];
 
 /* --------------------------------------------------
-    SHOP PAGE
+SHOP PAGE
 -------------------------------------------------- */
 class ShopPage extends StatefulWidget {
   const ShopPage({super.key});
@@ -54,9 +54,10 @@ class _ShopPageState extends State<ShopPage> {
     List<String>? names = prefs.getStringList("cart_items");
 
     if (names != null) {
-      cart = products.where((e) => names.contains(e.name)).toList();
-      setState(() {});
+    cart = products.where((e) => names.contains(e.name)).toList();
+    setState(() {});
     }
+
   }
 
   void addToCart(Product p) {
@@ -65,73 +66,84 @@ class _ShopPageState extends State<ShopPage> {
     setState(() {});
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text("${p.name} ditambahkan"),
-        backgroundColor: Colors.greenAccent.shade400,
-      ),
+    SnackBar(
+    content: Text("${p.name} ditambahkan"),
+    backgroundColor: Colors.greenAccent.shade400,
+    ),
     );
+
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0A1528),
-      appBar: AppBar(
-        title: const Text("Orion Shop", style: TextStyle(fontWeight: FontWeight.bold)),
         backgroundColor: const Color(0xFF0A1528),
-        elevation: 0,
-        actions: [
-          Stack(
-            children: [
-              IconButton(
-                icon: const Icon(Icons.shopping_cart_outlined, size: 28),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => CartPage(cart: cart, onUpdate: saveCart),
+        appBar: AppBar(
+          title: const Text("Orion Shop",
+              style: TextStyle(fontWeight: FontWeight.bold)),
+          backgroundColor: const Color(0xFF0A1528),
+          elevation: 0,
+          actions: [
+            Stack(
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.shopping_cart_outlined, size: 28),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) =>
+                            CartPage(cart: cart, onUpdate: saveCart),
+                      ),
+                    );
+                  },
+                ),
+                if (cart.isNotEmpty)
+                  Positioned(
+                    right: 6,
+                    top: 6,
+                    child: CircleAvatar(
+                      radius: 10,
+                      backgroundColor: Colors.redAccent,
+                      child: Text(
+                        cart.length.toString(),
+                        style: const TextStyle(fontSize: 11, color: Colors.white),
+                      ),
                     ),
-                  );
-                },
-              ),
-              if (cart.isNotEmpty)
-                Positioned(
-                  right: 6,
-                  top: 6,
-                  child: CircleAvatar(
-                    radius: 10,
-                    backgroundColor: Colors.redAccent,
-                    child: Text(
-                      cart.length.toString(),
-                      style: const TextStyle(fontSize: 11, color: Colors.white),
-                    ),
-                  ),
-                )
-            ],
-          )
-        ],
-      ),
+                  )
+              ],
+            )
+          ],
+        ),
+
+    /* --------------------------------------------------
+      GRID PRODUK UPGRADED
+  -------------------------------------------------- */
       body: GridView.builder(
         padding: const EdgeInsets.all(16),
         itemCount: products.length,
-        gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-          crossAxisCount: 2,
-          crossAxisSpacing: 16,
-          mainAxisSpacing: 16,
-          childAspectRatio: 0.70,
+        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+          crossAxisCount: MediaQuery.of(context).size.width > 800 ? 4 : 2,
+          crossAxisSpacing: 18,
+          mainAxisSpacing: 18,
+          childAspectRatio: 0.72,
         ),
         itemBuilder: (_, i) {
           final p = products[i];
 
           return Container(
             decoration: BoxDecoration(
-              color: const Color(0xFF11273F),
-              borderRadius: BorderRadius.circular(18),
+              gradient: const LinearGradient(
+                colors: [Color(0xFF132A45), Color(0xFF0D2238)],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+              borderRadius: BorderRadius.circular(20),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black26,
-                  offset: const Offset(0, 3),
-                  blurRadius: 6,
+                  color: Colors.black.withOpacity(0.35),
+                  offset: const Offset(0, 4),
+                  blurRadius: 10,
                 )
               ],
             ),
@@ -141,24 +153,31 @@ class _ShopPageState extends State<ShopPage> {
 
                 Expanded(
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(14),
+                    borderRadius: BorderRadius.circular(16),
                     child: Image.asset(
                       p.image,
                       fit: BoxFit.cover,
-                      errorBuilder: (_, __, ___) =>
-                      const Icon(Icons.image_not_supported, size: 50, color: Colors.white54),
+                      errorBuilder: (_, __, ___) => const Icon(
+                        Icons.image_not_supported,
+                        size: 50,
+                        color: Colors.white54,
+                      ),
                     ),
                   ),
                 ),
 
                 Padding(
-                  padding: const EdgeInsets.all(8),
+                  padding: const EdgeInsets.fromLTRB(8, 12, 8, 6),
                   child: Text(
                     p.name,
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 15, color: Colors.white, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
 
@@ -167,7 +186,7 @@ class _ShopPageState extends State<ShopPage> {
                   style: const TextStyle(color: Colors.cyanAccent, fontSize: 15),
                 ),
 
-                const SizedBox(height: 6),
+                const SizedBox(height: 10),
 
                 SizedBox(
                   width: double.infinity,
@@ -175,14 +194,18 @@ class _ShopPageState extends State<ShopPage> {
                     onPressed: () => addToCart(p),
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.cyanAccent,
+                      padding: const EdgeInsets.symmetric(vertical: 10),
                       shape: const RoundedRectangleBorder(
                         borderRadius: BorderRadius.only(
-                          bottomLeft: Radius.circular(18),
-                          bottomRight: Radius.circular(18),
+                          bottomLeft: Radius.circular(20),
+                          bottomRight: Radius.circular(20),
                         ),
                       ),
                     ),
-                    child: const Text("Tambah"),
+                    child: const Text(
+                      "Tambah",
+                      style: TextStyle(color: Colors.black),
+                    ),
                   ),
                 ),
               ],
@@ -190,12 +213,14 @@ class _ShopPageState extends State<ShopPage> {
           );
         },
       ),
+
     );
+
   }
 }
 
 /* --------------------------------------------------
-    CART PAGE — DELETE ITEM + CHECKOUT
+CART PAGE — DELETE + CHECKOUT
 -------------------------------------------------- */
 class CartPage extends StatefulWidget {
   final List<Product> cart;
@@ -236,107 +261,132 @@ class _CartPageState extends State<CartPage> {
     int total = widget.cart.fold(0, (sum, p) => sum + p.price);
 
     return Scaffold(
-      backgroundColor: const Color(0xFF0A1528),
-      appBar: AppBar(
-        backgroundColor: const Color(0xFF0A1528),
-        title: const Text("Keranjang Anda"),
-      ),
+    backgroundColor: const Color(0xFF0A1528),
+    appBar: AppBar(
+    backgroundColor: const Color(0xFF0A1528),
+    title: const Text("Keranjang Anda"),
+    ),
+    body: Column(
+    children: [
+    Expanded(
+    child: ListView.builder(
+    itemCount: widget.cart.length,
+    itemBuilder: (_, i) {
+    final p = widget.cart[i];
+    return Container(
+    margin:
+    const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+    padding: const EdgeInsets.all(12),
+    decoration: BoxDecoration(
+    gradient: const LinearGradient(
+    colors: [Color(0xFF1B3552), Color(0xFF152B44)],
+    ),
+    borderRadius: BorderRadius.circular(16),
+    ),
+    child: Row(
+    children: [
+    Image.asset(
+    p.image,
+    width: 62,
+    height: 62,
+    fit: BoxFit.cover,
+    errorBuilder: (_, __, ___) =>
+    const Icon(Icons.broken_image,
+    color: Colors.white),
+    ),
+    const SizedBox(width: 12),
 
-      body: Column(
-        children: [
-          Expanded(
-            child: ListView.builder(
-              itemCount: widget.cart.length,
-              itemBuilder: (_, i) {
-                final p = widget.cart[i];
+    Expanded(
+    child: Text(
+    p.name,
+    style: const TextStyle(
+    color: Colors.white, fontSize: 16),
+    ),
+    ),
 
-                return Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF132A45),
-                    borderRadius: BorderRadius.circular(14),
-                  ),
-                  child: Row(
-                    children: [
-                      Image.asset(p.image, width: 62, height: 62, fit: BoxFit.cover,
-                          errorBuilder: (_, __, ___) =>
-                          const Icon(Icons.broken_image, color: Colors.white)),
-                      const SizedBox(width: 12),
-
-                      Expanded(
-                        child: Text(p.name,
-                            style: const TextStyle(color: Colors.white, fontSize: 16)),
-                      ),
-
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.end,
-                        children: [
-                          Text("Rp ${p.price}",
-                              style: const TextStyle(color: Colors.cyanAccent)),
-                          const SizedBox(height: 6),
-                          GestureDetector(
-                            onTap: () => deleteItem(i),
-                            child: const Icon(Icons.delete, color: Colors.redAccent),
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
-
-          Container(
-            padding: const EdgeInsets.fromLTRB(20, 20, 20, 30),
-            decoration: const BoxDecoration(
-              color: Color(0xFF11273F),
-              borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
-            ),
-            child: Column(
-              children: [
-                Text("Total: Rp $total",
-                    style: const TextStyle(
-                        color: Colors.white, fontSize: 20, fontWeight: FontWeight.bold)),
-                const SizedBox(height: 16),
-
-                SizedBox(
-                  width: double.infinity,
-                  child: ElevatedButton(
-                    onPressed: widget.cart.isEmpty ? null : checkout,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.greenAccent,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
-                    ),
-                    child: const Text("Bayar Sekarang",
-                        style: TextStyle(color: Colors.black)),
-                  ),
-                ),
-              ],
-            ),
-          )
-        ],
-      ),
+    Column(
+    crossAxisAlignment: CrossAxisAlignment.end,
+    children: [
+    Text("Rp ${p.price}",
+    style: const TextStyle(
+    color: Colors.cyanAccent)),
+    const SizedBox(height: 6),
+    GestureDetector(
+    onTap: () => deleteItem(i),
+    child: const Icon(Icons.delete,
+    color: Colors.redAccent),
+    )
+    ],
+    )
+    ],
+    ),
     );
+    },
+    ),
+    ),
+
+    /* TOTAL & CHECKOUT */
+    Container(
+    padding: const EdgeInsets.fromLTRB(20, 20, 20, 30),
+    decoration: const BoxDecoration(
+    gradient: LinearGradient(
+    colors: [Color(0xFF11273F), Color(0xFF0D1F34)],
+    begin: Alignment.topCenter,
+    end: Alignment.bottomCenter,
+    ),
+    borderRadius: BorderRadius.vertical(top: Radius.circular(18)),
+    ),
+    child: Column(
+    children: [
+    Text(
+    "Total: Rp $total",
+    style: const TextStyle(
+    color: Colors.white,
+    fontSize: 20,
+    fontWeight: FontWeight.bold,
+    ),
+    ),
+    const SizedBox(height: 16),
+
+    SizedBox(
+    width: double.infinity,
+    child: ElevatedButton(
+    onPressed: widget.cart.isEmpty ? null : checkout,
+    style: ElevatedButton.styleFrom(
+    backgroundColor: Colors.greenAccent,
+    padding: const EdgeInsets.symmetric(vertical: 14),
+    shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(14)),
+    ),
+    child: const Text(
+    "Bayar Sekarang",
+    style: TextStyle(color: Colors.black),
+    ),
+    ),
+    ),
+    ],
+    ),
+    )
+    ],
+    ),
+    );
+
   }
 }
 
 /* --------------------------------------------------
-    PAYMENT PAGE — METODE PEMBAYARAN
+PAYMENT PAGE
 -------------------------------------------------- */
 class PaymentPage extends StatelessWidget {
   final int total;
   final List<Product> items;
   final Function onSuccess;
 
-  const PaymentPage({
-    super.key,
-    required this.total,
-    required this.items,
-    required this.onSuccess,
-  });
+  const PaymentPage(
+      {super.key,
+        required this.total,
+        required this.items,
+        required this.onSuccess});
 
   @override
   Widget build(BuildContext context) {
@@ -346,7 +396,6 @@ class PaymentPage extends StatelessWidget {
         backgroundColor: const Color(0xFF0A1528),
         title: const Text("Pilih Metode Pembayaran"),
       ),
-
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
@@ -358,7 +407,8 @@ class PaymentPage extends StatelessWidget {
     );
   }
 
-  Widget paymentButton(BuildContext ctx, String title, IconData icon, String method) {
+  Widget paymentButton(
+      BuildContext ctx, String title, IconData icon, String method) {
     return Container(
       margin: const EdgeInsets.only(bottom: 14),
       child: ElevatedButton(
@@ -393,7 +443,7 @@ class PaymentPage extends StatelessWidget {
 }
 
 /* --------------------------------------------------
-    PROCESSING PAGE — LOADER
+PROCESSING PAGE
 -------------------------------------------------- */
 class PaymentProcessingPage extends StatefulWidget {
   final String method;
@@ -401,13 +451,12 @@ class PaymentProcessingPage extends StatefulWidget {
   final List<Product> items;
   final Function onSuccess;
 
-  const PaymentProcessingPage({
-    super.key,
-    required this.method,
-    required this.total,
-    required this.items,
-    required this.onSuccess,
-  });
+  const PaymentProcessingPage(
+      {super.key,
+        required this.method,
+        required this.total,
+        required this.items,
+        required this.onSuccess});
 
   @override
   State<PaymentProcessingPage> createState() => _PaymentProcessingPageState();
@@ -417,7 +466,6 @@ class _PaymentProcessingPageState extends State<PaymentProcessingPage> {
   @override
   void initState() {
     super.initState();
-
     Future.delayed(const Duration(seconds: 3), () {
       saveTransaction();
     });
@@ -428,26 +476,25 @@ class _PaymentProcessingPageState extends State<PaymentProcessingPage> {
 
     List<String> names = widget.items.map((e) => e.name).toList();
     List<String> history = prefs.getStringList("purchase_history") ?? [];
-
     history.add("${DateTime.now()} | ${names.join(", ")} | ${widget.total}");
 
     prefs.setStringList("purchase_history", history);
-
     widget.onSuccess();
 
     Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(
-        builder: (_) => PaymentSuccessPage(total: widget.total),
-      ),
+    context,
+    MaterialPageRoute(
+    builder: (_) => PaymentSuccessPage(total: widget.total),
+    ),
     );
+
+
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFF0A1528),
-
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -464,7 +511,7 @@ class _PaymentProcessingPageState extends State<PaymentProcessingPage> {
 }
 
 /* --------------------------------------------------
-    PAYMENT SUCCESS PAGE
+PAYMENT SUCCESS PAGE
 -------------------------------------------------- */
 class PaymentSuccessPage extends StatelessWidget {
   final int total;
@@ -474,38 +521,43 @@ class PaymentSuccessPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF0A1528),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            const Icon(Icons.check_circle, color: Colors.greenAccent, size: 90),
+        backgroundColor: const Color(0xFF0A1528),
+        body: Center(
+            child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                const Icon(Icons.check_circle,
+                color: Colors.greenAccent, size: 90),
             const SizedBox(height: 20),
 
-            const Text("Pembayaran Berhasil!",
-                style: TextStyle(color: Colors.white, fontSize: 24)),
-            const SizedBox(height: 10),
+        const Text("Pembayaran Berhasil!",
+        style: TextStyle(color: Colors.white, fontSize: 24)),
 
-            Text("Total: Rp $total",
-                style: const TextStyle(color: Colors.cyanAccent, fontSize: 20)),
-            const SizedBox(height: 30),
+    const SizedBox(height: 10),
 
-            ElevatedButton(
-              onPressed: () {
-                Navigator.popUntil(context, (route) => route.isFirst);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.greenAccent,
-                padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 30),
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(14)),
-              ),
-              child: const Text("Kembali ke Toko",
-                  style: TextStyle(color: Colors.black)),
-            )
-          ],
-        ),
-      ),
+    Text("Total: Rp $total",
+    style: const TextStyle(
+    color: Colors.cyanAccent, fontSize: 20)),
+    const SizedBox(height: 30),
+
+    ElevatedButton(
+    onPressed: () {
+    Navigator.popUntil(context, (route) => route.isFirst);
+    },
+    style: ElevatedButton.styleFrom(
+    backgroundColor: Colors.greenAccent,
+    padding: const EdgeInsets.symmetric(
+    vertical: 14, horizontal: 30),
+    shape: RoundedRectangleBorder(
+    borderRadius: BorderRadius.circular(14)),
+    ),
+    child: const Text("Kembali ke Toko",
+    style: TextStyle(color: Colors.black)),
+    )
+    ],
+    ),
+    ),
     );
+
   }
 }

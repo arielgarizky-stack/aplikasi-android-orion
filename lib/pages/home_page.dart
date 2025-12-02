@@ -479,97 +479,117 @@ class _HomePageFuturisticState extends State<HomePageFuturistic> {
 
 
 
-          // === Daftar jenis gawai ===
-          Text(
-            'Pilih Jenis Gawai',
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
+// === Daftar jenis gawai ===
+            Text(
+              'Pilih Jenis Gawai',
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.bold,
+                fontSize: 18,
+                color: Colors.white,
+              ),
             ),
-          ),
-          const SizedBox(height: 14),
+            const SizedBox(height: 18),
 
-          GridView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-            gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-              maxCrossAxisExtent: 130,
-              crossAxisSpacing: 12,
-              mainAxisSpacing: 12,
-              childAspectRatio: 0.95,   // lebih tinggi, anti overflow
-            ),
-            itemCount: listGawai.length,
-            itemBuilder: (context, index) {
-              final gawai = listGawai[index];
+            GridView.builder(
+              shrinkWrap: true,
+              physics: const NeverScrollableScrollPhysics(),
+              padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 4),
+              gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                maxCrossAxisExtent: 150,
+                crossAxisSpacing: 14,
+                mainAxisSpacing: 14,
+                childAspectRatio: 0.92,
+              ),
+              itemCount: listGawai.length,
+              itemBuilder: (context, index) {
+                final gawai = listGawai[index];
 
-              return GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => BrandPage(
-                        deviceCategory: gawai['jenis'],
-                        brands: gawai['brands'],
-                      ),
-                    ),
-                  );
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(16),
-                    gradient: const LinearGradient(
-                      colors: [
-                        Color(0xFF1E232D),
-                        Color(0xFF181C24),
-                      ],
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.28),
-                        blurRadius: 10,
-                        offset: Offset(2, 4),
-                      ),
-                    ],
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 6),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(9),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.blueGrey.withOpacity(0.12),
-                          ),
-                          child: Icon(
-                            gawai['icon'],
-                            size: 24,
-                            color: Colors.lightBlue,
+                return Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(18),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => BrandPage(
+                            deviceCategory: gawai['jenis'],
+                            brands: gawai['brands'],
                           ),
                         ),
-                        const SizedBox(height: 6),
-                        Text(
-                          gawai['jenis'],
-                          textAlign: TextAlign.center,
-                          maxLines: 2,
-                          overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 12.5,
-                            height: 1.20,
-                            color: Colors.white.withOpacity(0.95),
-                          ),
+                      );
+                    },
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(18),
+                        gradient: const LinearGradient(
+                          colors: [
+                            Color(0xFF262C36),
+                            Color(0xFF1C2129),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
                         ),
-                      ],
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.22),
+                            blurRadius: 12,
+                            offset: Offset(2, 4),
+                          ),
+                        ],
+                        border: Border.all(
+                          color: Colors.white.withOpacity(0.06),
+                          width: 1,
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+
+                            // ICON CONTAINER
+                            Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: Colors.white.withOpacity(0.08),
+                                border: Border.all(
+                                  color: Colors.white.withOpacity(0.10),
+                                  width: 1,
+                                ),
+                              ),
+                              child: Icon(
+                                gawai['icon'],
+                                size: 26,
+                                color: Colors.cyanAccent,
+                              ),
+                            ),
+
+                            const SizedBox(height: 10),
+
+                            // NAMA KATEGORI
+                            Text(
+                              gawai['jenis'],
+                              textAlign: TextAlign.center,
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                              style: TextStyle(
+                                fontWeight: FontWeight.w600,
+                                fontSize: 13.5,
+                                height: 1.22,
+                                color: Colors.white.withOpacity(0.96),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
-                ),
-              );
-            },
-          ),
+                );
+              },
+            ),
+
 
 
 
@@ -579,30 +599,31 @@ class _HomePageFuturisticState extends State<HomePageFuturistic> {
             const SizedBox(height: 8),
             const _UpdateListSection(),
 
+//-============vidio================-
+        LayoutBuilder(
+          builder: (context, constraints) {
+            int crossAxis = 2;       // default mobile
+            double aspect = 16 / 10; // default rasio
 
+            // Desktop
+            if (constraints.maxWidth >= 700) {
+              crossAxis = 4;         // 4 kolom dalam 1 baris
+              aspect = 16 / 10;      // biar proporsional
+            }
 
-            // 🔹 Video Tutorial Section
-            const SizedBox(height: 20),
-            Text(
-              'Video Tutorial',
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 10),
-
-            GridView.builder(
+            return GridView.builder(
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
-              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                crossAxisSpacing: 12,
-                mainAxisSpacing: 12,
-                childAspectRatio: 16 / 10,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: crossAxis,
+                crossAxisSpacing: 14,
+                mainAxisSpacing: 14,
+                childAspectRatio: aspect,
               ),
               itemCount: videoList.length,
               itemBuilder: (context, index) {
                 final video = videoList[index];
+
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -615,53 +636,81 @@ class _HomePageFuturisticState extends State<HomePageFuturistic> {
                       ),
                     );
                   },
-                  child: Stack(
-                    children: [
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          image: DecorationImage(
-                            image: AssetImage(video['thumbnail']),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(14),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.18),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(14),
+                      child: Stack(
+                        children: [
+                          Image.asset(
+                            video['thumbnail'],
                             fit: BoxFit.cover,
+                            width: double.infinity,
+                            height: double.infinity,
                           ),
-                        ),
-                      ),
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12),
-                          color: Colors.black.withOpacity(0.35),
-                        ),
-                      ),
-                      const Center(
-                        child: Icon(
-                          Icons.play_circle_fill,
-                          color: Colors.white,
-                          size: 50,
-                        ),
-                      ),
-                      Positioned(
-                        bottom: 8,
-                        left: 8,
-                        right: 8,
-                        child: Text(
-                          video['title'],
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontWeight: FontWeight.bold,
-                            fontSize: 13,
-                            shadows: [
-                              Shadow(color: Colors.black54, blurRadius: 4),
-                            ],
+
+                          Container(
+                            color: Colors.black.withOpacity(0.32),
                           ),
-                          overflow: TextOverflow.ellipsis,
-                        ),
+
+                          Center(
+                            child: Container(
+                              padding: const EdgeInsets.all(6),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.85),
+                                shape: BoxShape.circle,
+                              ),
+                              child: const Icon(
+                                Icons.play_arrow_rounded,
+                                size: 38,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ),
+
+                          Positioned(
+                            bottom: 10,
+                            left: 10,
+                            right: 10,
+                            child: Text(
+                              video['title'],
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontWeight: FontWeight.w600,
+                                fontSize: 13.5,
+                                height: 1.2,
+                                shadows: [
+                                  Shadow(
+                                    color: Colors.black87,
+                                    blurRadius: 6,
+                                  ),
+                                ],
+                              ),
+                              maxLines: 2,
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
+                    ),
                   ),
                 );
               },
-            ),
-            // ======= Community =======
+            );
+          },
+        ),
+
+
+        // ======= Community =======
             Text(
               'Community and Support',
               style: theme.textTheme.titleMedium?.copyWith(
@@ -946,11 +995,11 @@ class _MarqueeBannerState extends State<MarqueeBanner> {
     final width = MediaQuery.of(context).size.width;
 
     return SizedBox(
-      height: 150,
+      height: 160,
       child: AbsorbPointer(
-        absorbing: true, // user tidak bisa stop scroll
+        absorbing: true,
         child: Listener(
-          behavior: HitTestBehavior.translucent, // tetap terima pointer
+          behavior: HitTestBehavior.translucent,
           child: ListView(
             controller: _scrollController,
             scrollDirection: Axis.horizontal,
@@ -967,23 +1016,76 @@ class _MarqueeBannerState extends State<MarqueeBanner> {
 
   Widget _buildBanner(String path, double width) {
     return GestureDetector(
-      onTap: () {
-        widget.onTap?.call(path);
-      },
-      behavior: HitTestBehavior.translucent,
-      child: SizedBox(
+      onTap: () => widget.onTap?.call(path),
+      child: Container(
         width: width,
+        margin: const EdgeInsets.symmetric(horizontal: 6),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.15),
+              blurRadius: 12,
+              offset: const Offset(0, 6),
+            ),
+          ],
+        ),
         child: ClipRRect(
           borderRadius: BorderRadius.circular(16),
-          child: Image.asset(
-            path,
-            fit: BoxFit.cover,
+          child: Stack(
+            children: [
+              // Gambar
+              Positioned.fill(
+                child: Image.asset(
+                  path,
+                  fit: BoxFit.cover,
+                ),
+              ),
+
+              // Gradient Overlay biar lebih cinematic
+              Positioned.fill(
+                child: Container(
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                      colors: [
+                        Colors.black.withOpacity(0.35),
+                        Colors.transparent,
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+
+              // Title kecil kalau kamu mau taro text nanti
+              Positioned(
+                bottom: 12,
+                left: 16,
+                right: 16,
+                child: Text(
+                  "",
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                    shadows: [
+                      Shadow(
+                        color: Colors.black87,
+                        blurRadius: 6,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 }
+
 
 // ==================== RESPONSIVE TYPE PAGE ==========================
 class TypePage extends StatefulWidget {
@@ -1002,6 +1104,7 @@ class TypePage extends StatefulWidget {
 
 class _TypePageState extends State<TypePage> {
   String? _openedType;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -1018,112 +1121,161 @@ class _TypePageState extends State<TypePage> {
         backgroundColor: theme.brightness == Brightness.dark
             ? const Color(0xFF0A192F)
             : Colors.deepOrange,
-        elevation: 4,
+        elevation: 3,
         centerTitle: true,
       ),
 
       body: ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
         itemCount: deviceTypes.length,
         itemBuilder: (context, index) {
           final typeName = deviceTypes[index];
           final isOpen = _openedType == typeName;
 
-          return Column(
-            children: [
-              GestureDetector(
-                onTap: () => setState(() {
-                  _openedType = isOpen ? null : typeName;
-                }),
-                child: AnimatedContainer(
-                  duration: const Duration(milliseconds: 200),
-                  curve: Curves.easeOut,
-                  margin: const EdgeInsets.only(bottom: 10),
-                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
-                  decoration: BoxDecoration(
-                    color: theme.brightness == Brightness.dark
-                        ? Colors.white10
-                        : Colors.white,
-                    borderRadius: BorderRadius.circular(14),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withOpacity(0.08),
-                        blurRadius: 6,
-                        offset: const Offset(2, 3),
+          return Container(
+            margin: const EdgeInsets.only(bottom: 14),
+            child: Column(
+              children: [
+
+                // CARD UTAMA
+                GestureDetector(
+                  onTap: () => setState(() {
+                    _openedType = isOpen ? null : typeName;
+                  }),
+                  child: AnimatedContainer(
+                    duration: const Duration(milliseconds: 180),
+                    curve: Curves.easeOut,
+                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
+                    decoration: BoxDecoration(
+                      color: theme.brightness == Brightness.dark
+                          ? const Color(0xFF1A1F2E)
+                          : Colors.white,
+                      borderRadius: BorderRadius.circular(14),
+                      border: Border.all(
+                        color: theme.brightness == Brightness.dark
+                            ? Colors.white24
+                            : Colors.black12,
                       ),
-                    ],
-                  ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: Text(
-                          typeName,
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                            fontWeight: FontWeight.w600,
-                            fontSize: 16,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.08),
+                          blurRadius: 8,
+                          offset: const Offset(0, 3),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Text(
+                            typeName,
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              fontSize: 16,
+                              color: theme.brightness == Brightness.dark
+                                  ? Colors.white
+                                  : Colors.black87,
+                            ),
                           ),
                         ),
-                      ),
-                      Icon(
-                        isOpen
-                            ? Icons.keyboard_arrow_up_rounded
-                            : Icons.keyboard_arrow_down_rounded,
-                      ),
-                    ],
+                        AnimatedRotation(
+                          turns: isOpen ? 0.5 : 0,
+                          duration: const Duration(milliseconds: 200),
+                          child: Icon(
+                            Icons.keyboard_arrow_down_rounded,
+                            size: 26,
+                            color: theme.brightness == Brightness.dark
+                                ? Colors.white70
+                                : Colors.black54,
+                          ),
+                        )
+                      ],
+                    ),
                   ),
                 ),
-              ),
 
-              AnimatedCrossFade(
-                crossFadeState:
-                isOpen ? CrossFadeState.showFirst : CrossFadeState.showSecond,
-                duration: const Duration(milliseconds: 220),
-                firstChild: Padding(
-                  padding: const EdgeInsets.only(left: 12, bottom: 8),
-                  child: Column(
-                    children: [
-                      ListTile(
-                        dense: true,
-                        leading: const Icon(Icons.grid_view_rounded, size: 22),
-                        title: const Text('Layout'),
-                        minLeadingWidth: 0,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => TypeDetailPage(
-                                brandName: widget.brandName,
-                                componentName: '$typeName - Layout',
-                              ),
-                            ),
-                          );
-                        },
+                // BAGIAN DETAIL (LAYOUT + SCHEMATIC)
+                AnimatedCrossFade(
+                  duration: const Duration(milliseconds: 220),
+                  crossFadeState: isOpen
+                      ? CrossFadeState.showFirst
+                      : CrossFadeState.showSecond,
+
+                  firstChild: Container(
+                    margin: const EdgeInsets.only(top: 6),
+                    padding: const EdgeInsets.fromLTRB(14, 6, 14, 12),
+                    decoration: BoxDecoration(
+                      color: theme.brightness == Brightness.dark
+                          ? const Color(0xFF101622)
+                          : const Color(0xFFF8F8F8),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: theme.brightness == Brightness.dark
+                            ? Colors.white10
+                            : Colors.black12,
                       ),
-                      ListTile(
-                        dense: true,
-                        leading: const Icon(Icons.bolt_rounded, size: 22),
-                        title: const Text('Schematic'),
-                        minLeadingWidth: 0,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (_) => TypeDetailPage(
-                                brandName: widget.brandName,
-                                componentName: '$typeName - Schematic',
+                    ),
+                    child: Column(
+                      children: [
+                        ListTile(
+                          dense: true,
+                          contentPadding: EdgeInsets.zero,
+                          leading: Icon(Icons.grid_view_rounded,
+                              size: 22,
+                              color: theme.brightness == Brightness.dark
+                                  ? Colors.cyanAccent
+                                  : Colors.deepOrangeAccent),
+                          title: const Text(
+                            'Layout',
+                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => TypeDetailPage(
+                                  brandName: widget.brandName,
+                                  componentName: '$typeName - Layout',
+                                ),
                               ),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
+                            );
+                          },
+                        ),
+                        const Divider(height: 6),
+                        ListTile(
+                          dense: true,
+                          contentPadding: EdgeInsets.zero,
+                          leading: Icon(Icons.bolt_rounded,
+                              size: 22,
+                              color: theme.brightness == Brightness.dark
+                                  ? Colors.amberAccent
+                                  : Colors.orange),
+                          title: const Text(
+                            'Schematic',
+                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (_) => TypeDetailPage(
+                                  brandName: widget.brandName,
+                                  componentName: '$typeName - Schematic',
+                                ),
+                              ),
+                            );
+                          },
+                        ),
+                      ],
+                    ),
                   ),
+
+                  secondChild: const SizedBox.shrink(),
                 ),
-                secondChild: const SizedBox.shrink(),
-              ),
-            ],
+              ],
+            ),
           );
         },
       ),
@@ -1193,67 +1345,61 @@ class _TypeDetailPageState extends State<TypeDetailPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.componentName),
-        backgroundColor: theme.brightness == Brightness.dark
-            ? const Color(0xFF0A192F)
-            : Colors.blue,
+        backgroundColor: const Color(0xFF0A192F),   // disamain
         centerTitle: true,
       ),
-      body: Column(
-        children: [
-          Expanded(
-            child: InteractiveViewer(
-              minScale: 0.5,
-              maxScale: 20.0,
-              boundaryMargin: const EdgeInsets.all(200),
-              child: Stack(
-                alignment: Alignment.center,
+      body: LayoutBuilder(
+          builder: (context, constraints) {
+            final bool isDesktop = constraints.maxWidth > 650;
+            return Container(
+              color: const Color(0xFF0A192F),   // W A R N A   U T A M A
+              child: Column(
                 children: [
-                  Image.asset(
-                    getImageForComponent(widget.componentName),
-                    fit: BoxFit.contain,
+                  if (isDesktop)
+                    Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Center(child: _buildDropdown()),
+                    ),
+
+                  Expanded(
+                    child: Container(
+                      width: double.infinity,
+                      height: double.infinity,
+                      color: const Color(0xFF0A192F),    // Sama
+                      child: InteractiveViewer(
+                        minScale: 0.3,
+                        maxScale: 20.0,
+                        boundaryMargin: const EdgeInsets.all(500),
+                        child: Center(
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              Image.asset(
+                                getImageForComponent(widget.componentName),
+                                fit: BoxFit.contain,
+                              ),
+                              if (selectedCategory != null)
+                                ..._buildSvgOverlaysForCategory(selectedCategory!),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                   ),
-                  if (selectedCategory != null)
-                    ..._buildSvgOverlaysForCategory(selectedCategory!),
+
+                  if (!isDesktop)
+                    Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Center(child: _buildDropdown()),
+                    ),
                 ],
               ),
-            ),
-          ),
-          Container(
-            padding: const EdgeInsets.all(12),
-            color: const Color(0xFF1E1E1E),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12),
-              decoration: BoxDecoration(
-                color: const Color(0xFF2E2E2E),
-                borderRadius: BorderRadius.circular(10),
-                border: Border.all(color: Colors.white24, width: 1),
-              ),
-              child: DropdownButton<String>(
-                value: selectedCategory,
-                hint: const Text(
-                  'Pilih Category',
-                  style: TextStyle(color: Colors.white70),
-                ),
-                dropdownColor: const Color(0xFF2A2A2A),
-                iconEnabledColor: Colors.white,
-                underline: const SizedBox(),
-                style: const TextStyle(color: Colors.white),
-                items: categories.map((cat) {
-                  return DropdownMenuItem(
-                    value: cat,
-                    child: Text(cat),
-                  );
-                }).toList(),
-                onChanged: (value) {
-                  setState(() {
-                    selectedCategory = value;
-                  });
-                },
-              ),
-            ),
-          ),
-        ],
-      ),
+            );
+          },
+        ),
+
+
+
     );
   }
   List<Widget> _buildSvgOverlaysForCategory(String category) {
@@ -1293,6 +1439,43 @@ class _TypeDetailPageState extends State<TypeDetailPage> {
         return 'assets/images/G532F.png';
     }
   }
+  Widget _buildDropdown() {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        color: const Color(0xFF0A192F),   // disamain
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: Colors.white24, width: 1),
+      ),
+      child: DropdownButton<String>(
+        value: selectedCategory,
+        hint: const Text(
+          'Pilih Category',
+          style: TextStyle(color: Colors.white70),
+        ),
+        dropdownColor: const Color(0xFF0A192F),   // disamain
+        iconEnabledColor: Colors.white,
+        underline: const SizedBox(),
+        style: const TextStyle(color: Colors.white),
+        items: categories.map((cat) {
+          return DropdownMenuItem(
+            value: cat,
+            child: Text(
+              cat,
+              style: const TextStyle(color: Colors.white),
+            ),
+          );
+        }).toList(),
+        onChanged: (value) {
+          setState(() {
+            selectedCategory = value;
+          });
+        },
+      ),
+    );
+  }
+
+
 
   String getSvgForCategory(String category) {
     switch (category.toLowerCase()) {
