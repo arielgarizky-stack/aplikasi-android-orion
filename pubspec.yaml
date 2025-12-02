@@ -67,4 +67,5 @@ flutter:
     - assets/images/Guideline/
     - assets/
     - assets/data/all_type_data.json
+    - assets/pdf/
 

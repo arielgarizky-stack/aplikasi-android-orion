@@ -10,14 +10,8 @@ import 'dart:convert';
 /// - Saves users to SharedPreferences (demo only - see comments about security)
 
 class RegisterPage extends StatefulWidget {
-  /// Current users list (each user is a map with name,email,pass)
   final List<Map<String, String>> users;
-
-  /// Callback to persist users in the parent scope (keeps original architecture)
   final Future<void> Function() saveUsers;
-
-  /// Optional: if provided, only emails belonging to these domains are allowed.
-  /// Example: ['gmail.com'] to only accept Gmail addresses, or ['mycompany.com']
   final List<String>? allowedDomains;
 
   const RegisterPage({
@@ -42,13 +36,9 @@ class _RegisterPageState extends State<RegisterPage> {
   bool _obscureConfirm = true;
   bool _loading = false;
 
-  // Simple email regex (good practical coverage). Don't replace with overly permissive checks.
-  final RegExp _emailReg = RegExp(
-      r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$"
-  );
+  final RegExp _emailReg =
+  RegExp(r"^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$");
 
-
-  // Password rules
   bool _hasMinLength(String s) => s.length >= 8;
   bool _hasUpper(String s) => s.contains(RegExp(r'[A-Z]'));
   bool _hasLower(String s) => s.contains(RegExp(r'[a-z]'));
@@ -63,34 +53,24 @@ class _RegisterPageState extends State<RegisterPage> {
 
   String? _validateEmail(String? v) {
     final email = v?.trim() ?? '';
-
     if (email.isEmpty) return 'Email wajib diisi';
+    if (!_emailReg.hasMatch(email)) return 'Format email tidak valid';
 
-    // regex email baru
-    if (!_emailReg.hasMatch(email)) {
-      return 'Format email tidak valid';
-    }
-
-    // domain check
     if (widget.allowedDomains != null && widget.allowedDomains!.isNotEmpty) {
       final domain = email.split('@').last.toLowerCase();
-      final allowed = widget.allowedDomains!
-          .map((d) => d.toLowerCase())
-          .toList();
+      final allowed = widget.allowedDomains!.map((e) => e.toLowerCase()).toList();
 
       if (!allowed.contains(domain)) {
-        return 'Hanya email dengan domain: ${allowed.join(', ')} yang diperbolehkan';
+        return 'Hanya domain: ${allowed.join(', ')} yang diperbolehkan';
       }
     }
 
-    // cek email duplikat
     final exists = widget.users.any(
             (u) => (u['email'] ?? '').toLowerCase() == email.toLowerCase());
     if (exists) return 'Email sudah terdaftar';
 
     return null;
   }
-
 
   String? _validatePassword(String? v) {
     final s = v ?? '';
@@ -99,7 +79,7 @@ class _RegisterPageState extends State<RegisterPage> {
     if (!_hasUpper(s)) return 'Harus punya huruf kapital';
     if (!_hasLower(s)) return 'Harus punya huruf kecil';
     if (!_hasDigit(s)) return 'Harus punya angka';
-    if (!_hasSpecial(s)) return 'Harus punya karakter spesial (contoh: !@#\$%)';
+    if (!_hasSpecial(s)) return 'Harus punya karakter spesial (!@#\$%)';
     return null;
   }
 
@@ -109,40 +89,34 @@ class _RegisterPageState extends State<RegisterPage> {
     return null;
   }
 
-  /// Very lightweight obfuscation for demo only. **Do not** use this for real production.
-  /// In production: send password to a backend and store a salted hash (bcrypt/PBKDF2/Argon2) server-side.
   String _obfuscatePassword(String pass) {
     final salt = 'orion_demo_salt';
     return base64Encode(utf8.encode('$salt:$pass'));
   }
 
   Future<void> _register() async {
-    final form = _formKey.currentState!;
-    if (!form.validate()) return;
-
-    final name = _name.text.trim();
-    final email = _email.text.trim();
-    final pass = _pass.text;
+    if (!_formKey.currentState!.validate()) return;
 
     setState(() => _loading = true);
 
-    // simulate small delay
     await Future.delayed(const Duration(milliseconds: 400));
 
-    // add new user
-    final newUser = {'name': name, 'email': email, 'pass': _obfuscatePassword(pass)};
-    widget.users.add(newUser);
+    final newUser = {
+      'name': _name.text.trim(),
+      'email': _email.text.trim(),
+      'pass': _obfuscatePassword(_pass.text)
+    };
 
+    widget.users.add(newUser);
     await widget.saveUsers();
 
-    // keep SharedPreferences in sync for this demo
     final prefs = await SharedPreferences.getInstance();
     await prefs.setString('users', jsonEncode(widget.users));
 
     setState(() => _loading = false);
 
     ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('🎉 Akun $name berhasil dibuat')),
+      SnackBar(content: Text('Akun ${_name.text.trim()} berhasil dibuat')),
     );
 
     Navigator.pop(context);
@@ -150,21 +124,12 @@ class _RegisterPageState extends State<RegisterPage> {
 
   double _passwordStrengthScore(String pw) {
     var score = 0;
-    if (_hasMinLength(pw)) score += 1;
-    if (_hasUpper(pw)) score += 1;
-    if (_hasLower(pw)) score += 1;
-    if (_hasDigit(pw)) score += 1;
-    if (_hasSpecial(pw)) score += 1;
-    return score / 5.0; // 0.0 - 1.0
-  }
-
-  @override
-  void dispose() {
-    _name.dispose();
-    _email.dispose();
-    _pass.dispose();
-    _confirm.dispose();
-    super.dispose();
+    if (_hasMinLength(pw)) score++;
+    if (_hasUpper(pw)) score++;
+    if (_hasLower(pw)) score++;
+    if (_hasDigit(pw)) score++;
+    if (_hasSpecial(pw)) score++;
+    return score / 5;
   }
 
   @override
@@ -172,170 +137,200 @@ class _RegisterPageState extends State<RegisterPage> {
     final theme = Theme.of(context);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Buat Akun Baru'),
-        centerTitle: true,
-        elevation: 0,
-      ),
-      body: SafeArea(
-        child: Container(
-          decoration: BoxDecoration(
-            gradient: LinearGradient(
-              colors: theme.brightness == Brightness.dark
-                  ? [const Color(0xFF041021), const Color(0xFF072033)]
-                  : [const Color(0xFFFFF7ED), const Color(0xFFFCECE4)],
-            ),
+      body: Container(
+        width: double.infinity,
+        height: double.infinity,
+        decoration: BoxDecoration(
+          gradient: theme.brightness == Brightness.dark
+              ? const LinearGradient(
+            colors: [Color(0xFF040B18), Color(0xFF0A1A33)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          )
+              : const LinearGradient(
+            colors: [Color(0xFFFFF5EC), Color(0xFFFDE8D6)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
-          child: Padding(
-            padding: const EdgeInsets.all(18.0),
-            child: Form(
-              key: _formKey,
-              autovalidateMode: AutovalidateMode.onUserInteraction,
-              child: ListView(
-                children: [
-                  const SizedBox(height: 20),
-                  Center(
-                    child: Text(
-                      'Daftar Akun ORION',
-                      style: theme.textTheme.headlineSmall?.copyWith(
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 20),
-
-                  TextFormField(
-                    controller: _name,
-                    textInputAction: TextInputAction.next,
-                    decoration: const InputDecoration(
-                      labelText: 'Nama Lengkap',
-                      prefixIcon: Icon(Icons.person_outline),
-                      border: OutlineInputBorder(),
-                    ),
-                    validator: _validateName,
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  TextFormField(
-                    controller: _email,
-                    keyboardType: TextInputType.emailAddress,
-                    textInputAction: TextInputAction.next,
-                    decoration: InputDecoration(
-                      labelText: 'Email',
-                      prefixIcon: const Icon(Icons.email_outlined),
-                      border: const OutlineInputBorder(),
-                      helperText: widget.allowedDomains != null && widget.allowedDomains!.isNotEmpty
-                          ? 'Hanya domain: ${widget.allowedDomains!.join(', ')}'
-                          : 'Gunakan email aktif untuk verifikasi',
-                    ),
-                    validator: _validateEmail,
-                  ),
-
-                  const SizedBox(height: 12),
-
-                  TextFormField(
-                    controller: _pass,
-                    obscureText: _obscure,
-                    textInputAction: TextInputAction.next,
-                    decoration: InputDecoration(
-                      labelText: 'Password',
-                      prefixIcon: const Icon(Icons.lock_outline),
-                      border: const OutlineInputBorder(),
-                      suffixIcon: IconButton(
-                        icon: Icon(_obscure ? Icons.visibility_off : Icons.visibility),
-                        onPressed: () => setState(() => _obscure = !_obscure),
-                      ),
-                    ),
-                    validator: _validatePassword,
-                    onChanged: (_) => setState(() {}),
-                  ),
-
-                  const SizedBox(height: 8),
-
-                  // Password strength indicator
-                  Builder(builder: (ctx) {
-                    final score = _passwordStrengthScore(_pass.text);
-                    final percent = (score * 100).round();
-                    return Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        LinearProgressIndicator(value: score),
-                        const SizedBox(height: 6),
-                        Text('Kekuatan password: $percent%'),
-                        const SizedBox(height: 8),
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 6,
-                          children: [
-                            _ruleChip('≥8 chars', _hasMinLength(_pass.text)),
-                            _ruleChip('Upper', _hasUpper(_pass.text)),
-                            _ruleChip('Lower', _hasLower(_pass.text)),
-                            _ruleChip('Digit', _hasDigit(_pass.text)),
-                            _ruleChip('Special', _hasSpecial(_pass.text)),
-                          ],
-                        ),
-                      ],
-                    );
-                  }),
-
-                  const SizedBox(height: 12),
-
-                  TextFormField(
-                    controller: _confirm,
-                    obscureText: _obscureConfirm,
-                    textInputAction: TextInputAction.done,
-                    decoration: InputDecoration(
-                      labelText: 'Konfirmasi Password',
-                      prefixIcon: const Icon(Icons.lock_outline),
-                      border: const OutlineInputBorder(),
-                      suffixIcon: IconButton(
-                        icon: Icon(_obscureConfirm ? Icons.visibility_off : Icons.visibility),
-                        onPressed: () => setState(() => _obscureConfirm = !_obscureConfirm),
-                      ),
-                    ),
-                    validator: _validateConfirm,
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: _loading
-                          ? null
-                          : () {
-                        if (_formKey.currentState!.validate()) _register();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 14),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      child: _loading
-                          ? const SizedBox(
-                        height: 16,
-                        width: 16,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                          : const Text('Daftar Sekarang'),
-                    ),
+        ),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(
+              maxWidth: 480,
+            ),
+            child: AnimatedContainer(
+              duration: const Duration(milliseconds: 300),
+              padding: const EdgeInsets.all(22),
+              margin: const EdgeInsets.symmetric(horizontal: 18),
+              decoration: BoxDecoration(
+                color: theme.cardColor.withOpacity(theme.brightness == Brightness.dark ? 0.6 : 0.85),
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.25),
+                    blurRadius: 18,
+                    offset: const Offset(0, 8),
                   ),
                 ],
+                border: Border.all(
+                  color: theme.brightness == Brightness.dark
+                      ? Colors.white.withOpacity(0.12)
+                      : Colors.black.withOpacity(0.05),
+                ),
+              ),
+              child: Form(
+                key: _formKey,
+                autovalidateMode: AutovalidateMode.onUserInteraction,
+                child: ListView(
+                  shrinkWrap: true,
+                  children: [
+                    const SizedBox(height: 10),
+                    Text(
+                      'Buat Akun Baru',
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.headlineSmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 26,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text(
+                      'Daftar untuk melanjutkan ke ORION',
+                      textAlign: TextAlign.center,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.hintColor,
+                      ),
+                    ),
+                    const SizedBox(height: 26),
+
+                    TextFormField(
+                      controller: _name,
+                      decoration: const InputDecoration(
+                        labelText: 'Nama Lengkap',
+                        prefixIcon: Icon(Icons.person_outline),
+                        border: OutlineInputBorder(),
+                      ),
+                      validator: _validateName,
+                    ),
+
+                    const SizedBox(height: 14),
+
+                    TextFormField(
+                      controller: _email,
+                      decoration: InputDecoration(
+                        labelText: 'Email',
+                        prefixIcon: const Icon(Icons.email_outlined),
+                        border: const OutlineInputBorder(),
+                        helperText: widget.allowedDomains != null &&
+                            widget.allowedDomains!.isNotEmpty
+                            ? 'Hanya domain: ${widget.allowedDomains!.join(', ')}'
+                            : 'Gunakan email aktif',
+                      ),
+                      validator: _validateEmail,
+                    ),
+
+                    const SizedBox(height: 14),
+
+                    TextFormField(
+                      controller: _pass,
+                      obscureText: _obscure,
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        prefixIcon: const Icon(Icons.lock_outline),
+                        border: const OutlineInputBorder(),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                              _obscure ? Icons.visibility_off : Icons.visibility),
+                          onPressed: () => setState(() => _obscure = !_obscure),
+                        ),
+                      ),
+                      validator: _validatePassword,
+                      onChanged: (_) => setState(() {}),
+                    ),
+
+                    const SizedBox(height: 10),
+
+                    Builder(builder: (ctx) {
+                      final score = _passwordStrengthScore(_pass.text);
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          LinearProgressIndicator(value: score),
+                          const SizedBox(height: 6),
+                          Text('Kekuatan password: ${(score * 100).round()}%'),
+                        ],
+                      );
+                    }),
+
+                    const SizedBox(height: 18),
+
+                    TextFormField(
+                      controller: _confirm,
+                      obscureText: _obscureConfirm,
+                      decoration: InputDecoration(
+                        labelText: 'Konfirmasi Password',
+                        prefixIcon: const Icon(Icons.lock_outline),
+                        border: const OutlineInputBorder(),
+                        suffixIcon: IconButton(
+                          icon: Icon(_obscureConfirm
+                              ? Icons.visibility_off
+                              : Icons.visibility),
+                          onPressed: () =>
+                              setState(() => _obscureConfirm = !_obscureConfirm),
+                        ),
+                      ),
+                      validator: _validateConfirm,
+                    ),
+
+                    const SizedBox(height: 26),
+
+                    Row(
+                      children: [
+                        Expanded(
+                          child: ElevatedButton(
+                            onPressed: _loading
+                                ? null
+                                : () {
+                              if (_formKey.currentState!.validate()) {
+                                _register();
+                              }
+                            },
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(14),
+                              ),
+                            ),
+                            child: _loading
+                                ? const SizedBox(
+                              height: 18,
+                              width: 18,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                                : const Text('Daftar Sekarang'),
+                          ),
+                        ),
+
+                        SizedBox(width: 12),
+
+                        Expanded(
+                          child: TextButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            child: const Text('Kembali ke Login'),
+                          ),
+                        ),
+                      ],
+                    ),
+
+                  ],
+                ),
               ),
             ),
           ),
         ),
       ),
-    );
-  }
-
-  Widget _ruleChip(String label, bool ok) {
-    return Chip(
-      label: Text(label),
-      backgroundColor: ok ? null : Colors.grey.shade200,
-      avatar: Icon(ok ? Icons.check_circle : Icons.radio_button_unchecked, size: 18),
     );
   }
 }
