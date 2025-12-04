@@ -1,20 +1,16 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:syncfusion_flutter_pdfviewer/pdfviewer.dart';
 
-class PdfViewerPage extends StatelessWidget {
-  final String assetPath;
+class PDFViewerPage extends StatelessWidget {
+  final String pdfPath; // contoh: assets/schematic/a12.pdf
 
-  const PdfViewerPage({
-    super.key,
-    required this.assetPath,
-  });
+  const PDFViewerPage({super.key, required this.pdfPath});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("PDF Viewer")),
-      body: SfPdfViewer.asset(assetPath),
+      appBar: AppBar(title: const Text("Schematic Viewer")),
+      body: SfPdfViewer.asset(pdfPath),
     );
   }
 }

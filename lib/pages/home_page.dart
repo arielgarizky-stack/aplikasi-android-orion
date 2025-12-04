@@ -4,17 +4,17 @@ import 'package:orionschematic/pages/brand_page.dart';
 import 'package:orionschematic/pages/howto_use_page.dart';
 import 'package:orionschematic/pages/banner_detail.dart';
 import 'package:orionschematic/pages/folder_detail.dart';
-import 'package:orionschematic/pages/pdf_viewer_page.dart';
-import 'package:orionschematic/pages/pdf_viewer_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'dart:convert'; // ⬅️ untuk jsonDecode
 import 'profile_page.dart';
 import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:url_launcher/url_launcher.dart';
-import '../data_loader.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-
+import '../data_loader.dart';
+import 'pdf_viewer_page.dart';
+import 'package:flutter/foundation.dart';
+import 'package:webviewx_plus/webviewx_plus.dart';
 
 
 
@@ -232,7 +232,7 @@ class _HomePageFuturisticState extends State<HomePageFuturistic> {
                     'ORION MENU',
                     style: TextStyle(
                       color: Colors.white,
-                      fontSize: 20,
+                      fontSize: 16,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 1.2,
                     ),
@@ -821,11 +821,7 @@ class _HomePageFuturisticState extends State<HomePageFuturistic> {
 
 
 // 🔹 fungsi tombol sosial futuristik
-  Widget _buildSocialButton({
-    required List<Color> gradientColors,
-    required IconData icon,
-    required String url,
-  }) {
+  Widget _buildSocialButton({required List<Color> gradientColors, required IconData icon, required String url,}) {
     return GestureDetector(
       onTap: () async {
         final uri = Uri.parse(url);
@@ -852,12 +848,7 @@ class _HomePageFuturisticState extends State<HomePageFuturistic> {
       ),
     );
   }
-  Widget _bannerCard(
-      BuildContext context,
-      String title,
-      String sub,
-      IconData icon,
-      ) {
+  Widget _bannerCard(BuildContext context, String title, String sub, IconData icon,) {
     final theme = Theme.of(context);
     return GestureDetector(
       onTap: () => Navigator.push(
@@ -1088,8 +1079,7 @@ class _MarqueeBannerState extends State<MarqueeBanner> {
   }
 }
 
-
-// ==================== RESPONSIVE TYPE PAGE ==========================
+// ===== RESPONSIVE TYPE PAGE =====
 class TypePage extends StatefulWidget {
   final String brandName;
   final String deviceCategory;
@@ -1123,201 +1113,145 @@ class _TypePageState extends State<TypePage> {
         backgroundColor: theme.brightness == Brightness.dark
             ? const Color(0xFF0A192F)
             : Colors.deepOrange,
-        elevation: 3,
+        elevation: 4,
         centerTitle: true,
       ),
 
       body: ListView.builder(
-        padding: const EdgeInsets.fromLTRB(16, 20, 16, 16),
+        padding: const EdgeInsets.all(16),
         itemCount: deviceTypes.length,
         itemBuilder: (context, index) {
           final typeName = deviceTypes[index];
           final isOpen = _openedType == typeName;
 
-          return Container(
-            margin: const EdgeInsets.only(bottom: 14),
-            child: Column(
-              children: [
-
-                // CARD UTAMA
-                GestureDetector(
-                  onTap: () => setState(() {
-                    _openedType = isOpen ? null : typeName;
-                  }),
-                  child: AnimatedContainer(
-                    duration: const Duration(milliseconds: 180),
-                    curve: Curves.easeOut,
-                    padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 16),
-                    decoration: BoxDecoration(
-                      color: theme.brightness == Brightness.dark
-                          ? const Color(0xFF1A1F2E)
-                          : Colors.white,
-                      borderRadius: BorderRadius.circular(14),
-                      border: Border.all(
-                        color: theme.brightness == Brightness.dark
-                            ? Colors.white24
-                            : Colors.black12,
+          return Column(
+            children: [
+              GestureDetector(
+                onTap: () => setState(() {
+                  _openedType = isOpen ? null : typeName;
+                }),
+                child: AnimatedContainer(
+                  duration: const Duration(milliseconds: 200),
+                  curve: Curves.easeOut,
+                  margin: const EdgeInsets.only(bottom: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  decoration: BoxDecoration(
+                    color: theme.brightness == Brightness.dark
+                        ? Colors.white10
+                        : Colors.white,
+                    borderRadius: BorderRadius.circular(14),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.08),
+                        blurRadius: 6,
+                        offset: const Offset(2, 3),
                       ),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.08),
-                          blurRadius: 8,
-                          offset: const Offset(0, 3),
+                    ],
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          typeName,
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          style: const TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 16,
+                          ),
                         ),
-                      ],
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: Text(
-                            typeName,
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            style: TextStyle(
-                              fontWeight: FontWeight.w600,
-                              fontSize: 16,
-                              color: theme.brightness == Brightness.dark
-                                  ? Colors.white
-                                  : Colors.black87,
+                      ),
+                      Icon(
+                        isOpen
+                            ? Icons.keyboard_arrow_up_rounded
+                            : Icons.keyboard_arrow_down_rounded,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+
+              AnimatedCrossFade(
+                crossFadeState:
+                isOpen ? CrossFadeState.showFirst : CrossFadeState.showSecond,
+                duration: const Duration(milliseconds: 220),
+                firstChild: Padding(
+                  padding: const EdgeInsets.only(left: 12, bottom: 8),
+                  child: Column(
+                    children: [
+                      // LAYOUT
+                      ListTile(
+                        dense: true,
+                        leading: const Icon(Icons.grid_view_rounded, size: 22),
+                        title: const Text('Layout'),
+                        minLeadingWidth: 0,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => TypeDetailPage(
+                                brandName: widget.brandName,
+                                componentName: '$typeName - Layout',
+                              ),
                             ),
-                          ),
-                        ),
-                        AnimatedRotation(
-                          turns: isOpen ? 0.5 : 0,
-                          duration: const Duration(milliseconds: 200),
-                          child: Icon(
-                            Icons.keyboard_arrow_down_rounded,
-                            size: 26,
-                            color: theme.brightness == Brightness.dark
-                                ? Colors.white70
-                                : Colors.black54,
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-
-                // BAGIAN DETAIL (LAYOUT + SCHEMATIC)
-                AnimatedCrossFade(
-                  duration: const Duration(milliseconds: 220),
-                  crossFadeState: isOpen
-                      ? CrossFadeState.showFirst
-                      : CrossFadeState.showSecond,
-
-                  firstChild: Container(
-                    margin: const EdgeInsets.only(top: 6),
-                    padding: const EdgeInsets.fromLTRB(14, 6, 14, 12),
-                    decoration: BoxDecoration(
-                      color: theme.brightness == Brightness.dark
-                          ? const Color(0xFF101622)
-                          : const Color(0xFFF8F8F8),
-                      borderRadius: BorderRadius.circular(12),
-                      border: Border.all(
-                        color: theme.brightness == Brightness.dark
-                            ? Colors.white10
-                            : Colors.black12,
+                          );
+                        },
                       ),
-                    ),
-                    child: Column(
-                      children: [
-                        ListTile(
-                          dense: true,
-                          contentPadding: EdgeInsets.zero,
-                          leading: Icon(Icons.grid_view_rounded,
-                              size: 22,
-                              color: theme.brightness == Brightness.dark
-                                  ? Colors.cyanAccent
-                                  : Colors.deepOrangeAccent),
-                          title: const Text(
-                            'Layout',
-                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => TypeDetailPage(
-                                  brandName: widget.brandName,
-                                  componentName: '$typeName - Layout',
-                                ),
+
+                      // SCHEMATIC
+                      ListTile(
+                        dense: true,
+                        leading: const Icon(Icons.bolt_rounded, size: 22),
+                        title: const Text('Schematic'),
+                        minLeadingWidth: 0,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => TypeDetailPage(
+                                brandName: widget.brandName,
+                                componentName: '$typeName - Schematic',
                               ),
-                            );
-                          },
-                        ),
-                        const Divider(height: 6),
-                        ListTile(
-                          dense: true,
-                          contentPadding: EdgeInsets.zero,
-                          leading: Icon(Icons.bolt_rounded,
-                              size: 22,
-                              color: theme.brightness == Brightness.dark
-                                  ? Colors.amberAccent
-                                  : Colors.orange),
-                          title: const Text(
-                            'Schematic',
-                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => TypeDetailPage(
-                                  brandName: widget.brandName,
-                                  componentName: '$typeName - Schematic',
-                                ),
+                            ),
+                          );
+                        },
+                      ),
+
+                      // === GUIDELINE (BARU DITAMBAHKAN) ===
+                      ListTile(
+                        dense: true,
+                        leading: const Icon(Icons.menu_book_rounded, size: 22),
+                        title: const Text('Guideline'),
+                        minLeadingWidth: 0,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => TypeDetailPage(
+                                brandName: widget.brandName,
+                                componentName: '$typeName - Guideline',
                               ),
-                            );
-                          },
-                        ),
-                        ListTile(
-                          dense: true,
-                          contentPadding: EdgeInsets.zero,
-                          leading: Icon(
-                            Icons.picture_as_pdf,
-                            size: 22,
-                            color: theme.brightness == Brightness.dark
-                                ? Colors.redAccent
-                                : Colors.red,
-                          ),
-                          title: const Text(
-                            'Guideline (PDF)',
-                            style: TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
-                          ),
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => PdfViewerRouter(assetPath: 'assets/pdf/Layout.pdf'),
-                              ),
-                            );
-
-
-
-
-                          },
-                        ),
-
-
-                      ],
-                    ),
+                            ),
+                          );
+                        },
+                      ),
+                    ],
                   ),
-
-                  secondChild: const SizedBox.shrink(),
                 ),
-              ],
-            ),
+                secondChild: const SizedBox.shrink(),
+              ),
+            ],
           );
         },
       ),
     );
   }
 }
-
-/* -------------------- type brand gawai page ------------------- */
+/* --------------- type brand gawai page ------------- */
 class TypeDetailPage extends StatefulWidget {
   final String brandName;
   final String componentName;
+
   const TypeDetailPage({
     required this.brandName,
     required this.componentName,
@@ -1330,6 +1264,9 @@ class TypeDetailPage extends StatefulWidget {
 
 class _TypeDetailPageState extends State<TypeDetailPage> {
   String? selectedCategory;
+
+  // FILE PDF FIX SESUAI PERMINTAAN KAMU
+  final String schematicPDF = "assets/pdf/SCH.pdf";
 
   final Map<String, Color> categoryColors = {
     'LCD': Colors.cyanAccent,
@@ -1373,69 +1310,148 @@ class _TypeDetailPageState extends State<TypeDetailPage> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    final bool isGuideline =
+    widget.componentName.toLowerCase().contains("guideline");
+
+    final bool isSchematic =
+    widget.componentName.toLowerCase().contains("schematic");
+
+    // ===================== SCHEMATIC → BUKA PDF =====================
+    if (isSchematic) {
+      Future.microtask(() {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (_) =>
+                PDFViewerPage(pdfPath: schematicPDF), // ← FIX DI SINI
+          ),
+        );
+      });
+
+
+      return const Scaffold(
+        body: Center(child: CircularProgressIndicator()),
+      );
+    }
+    // ===============================================================
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.componentName),
-        backgroundColor: const Color(0xFF0A192F),   // disamain
+        backgroundColor:
+        theme.brightness == Brightness.dark ? const Color(0xFF0A192F) : Colors.blue,
         centerTitle: true,
       ),
-      body: LayoutBuilder(
-          builder: (context, constraints) {
-            final bool isDesktop = constraints.maxWidth > 650;
-            return Container(
-              color: const Color(0xFF0A192F),   // W A R N A   U T A M A
-              child: Column(
-                children: [
-                  if (isDesktop)
-                    Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Center(child: _buildDropdown()),
-                    ),
 
-                  Expanded(
-                    child: Container(
-                      width: double.infinity,
-                      height: double.infinity,
-                      color: const Color(0xFF0A192F),    // Sama
-                      child: InteractiveViewer(
-                        minScale: 0.3,
-                        maxScale: 20.0,
-                        boundaryMargin: const EdgeInsets.all(500),
-                        child: Center(
-                          child: Stack(
-                            alignment: Alignment.center,
-                            children: [
-                              Image.asset(
-                                getImageForComponent(widget.componentName),
-                                fit: BoxFit.contain,
-                              ),
-                              if (selectedCategory != null)
-                                ..._buildSvgOverlaysForCategory(selectedCategory!),
-                            ],
-                          ),
+      body: isGuideline
+          ? _buildGuidelineUI()       // tampilan guideline
+          : _buildEmptyPlaceholder(), // layout tetap kosong
+    );
+  }
+
+  Widget _buildEmptyPlaceholder() {
+    return const Center(
+      child: Text(
+        "Belum ada file untuk ditampilkan",
+        style: TextStyle(fontSize: 16, color: Colors.grey),
+      ),
+    );
+  }
+  Widget _buildGuidelineUI() {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final isDesktop = constraints.maxWidth > 800;
+
+        return Stack(
+          children: [
+            // AREA GAMBAR
+            Positioned.fill(
+              child: InteractiveViewer(
+                minScale: 0.5,
+                maxScale: 20.0,
+                boundaryMargin: const EdgeInsets.all(200),
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Image.asset(
+                      getImageForComponent(widget.componentName),
+                      fit: BoxFit.contain,
+                    ),
+                    if (selectedCategory != null)
+                      ..._buildSvgOverlaysForCategory(selectedCategory!),
+                  ],
+                ),
+              ),
+            ),
+
+            // DROPDOWN MELAYANG (DESKTOP & MOBILE)
+            // DROPDOWN MELAYANG (DESKTOP & MOBILE)
+            Positioned(
+              bottom: 20,
+              left: isDesktop ? null : 10,
+              right: isDesktop ? null : 10,
+              child: Align(
+                alignment: isDesktop ? Alignment.bottomCenter : Alignment.bottomCenter,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    maxWidth: isDesktop ? 260 : double.infinity,
+                  ),
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF1E1E1E).withOpacity(0.9),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: Colors.white24,
+                        width: 1,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.35),
+                          blurRadius: 12,
+                          offset: const Offset(0, 4),
+                        )
+                      ],
+                    ),
+                    child: DropdownButtonHideUnderline(
+                      child: DropdownButton<String>(
+                        isExpanded: true,
+                        value: selectedCategory,
+                        hint: const Text(
+                          "Pilih kategori",
+                          style: TextStyle(color: Colors.white70, fontSize: 14),
                         ),
+                        dropdownColor: const Color(0xFF2E2E2E),
+                        iconEnabledColor: Colors.white,
+                        items: categories.map((cat) {
+                          return DropdownMenuItem(
+                            value: cat,
+                            child: Text(
+                              cat,
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (value) {
+                          setState(() {
+                            selectedCategory = value;
+                          });
+                        },
                       ),
                     ),
                   ),
-
-                  if (!isDesktop)
-                    Padding(
-                      padding: const EdgeInsets.all(12),
-                      child: Center(child: _buildDropdown()),
-                    ),
-                ],
+                ),
               ),
-            );
-          },
-        ),
+            ),
 
-
-
+          ],
+        );
+      },
     );
   }
+
   List<Widget> _buildSvgOverlaysForCategory(String category) {
-    final key = category;
-    final list = multiSvgMap[key];
+    final list = multiSvgMap[category];
 
     if (list == null || list.isEmpty) {
       final fallback = getSvgForCategory(category);
@@ -1448,8 +1464,9 @@ class _TypeDetailPageState extends State<TypeDetailPage> {
     }
 
     return list.map((item) {
-      final String file = item['file'] as String;
-      final Color? color = item['color'] as Color?;
+      final String file = item['file'];
+      final Color? color = item['color'];
+
       return SvgPicture.asset(
         file,
         fit: BoxFit.contain,
@@ -1461,52 +1478,8 @@ class _TypeDetailPageState extends State<TypeDetailPage> {
   }
 
   String getImageForComponent(String name) {
-    switch (name.toLowerCase()) {
-      case 'motherboard':
-      case 'cpu':
-      case 'galaxy s6 - layout':
-        return 'assets/images/G532F.png';
-      default:
-        return 'assets/images/G532F.png';
-    }
+    return 'assets/images/G532F.png';
   }
-  Widget _buildDropdown() {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(
-        color: const Color(0xFF0A192F),   // disamain
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: Colors.white24, width: 1),
-      ),
-      child: DropdownButton<String>(
-        value: selectedCategory,
-        hint: const Text(
-          'Pilih Category',
-          style: TextStyle(color: Colors.white70),
-        ),
-        dropdownColor: const Color(0xFF0A192F),   // disamain
-        iconEnabledColor: Colors.white,
-        underline: const SizedBox(),
-        style: const TextStyle(color: Colors.white),
-        items: categories.map((cat) {
-          return DropdownMenuItem(
-            value: cat,
-            child: Text(
-              cat,
-              style: const TextStyle(color: Colors.white),
-            ),
-          );
-        }).toList(),
-        onChanged: (value) {
-          setState(() {
-            selectedCategory = value;
-          });
-        },
-      ),
-    );
-  }
-
-
 
   String getSvgForCategory(String category) {
     switch (category.toLowerCase()) {
@@ -1737,3 +1710,4 @@ class _VideoPlayerPageState extends State<VideoPlayerPage> {
     super.dispose();
   }
 }
+

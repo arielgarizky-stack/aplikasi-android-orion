@@ -22,115 +22,85 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
 
-  Widget _buildMobileLayout(ThemeData theme) {
-    return Column(
-      children: [
-        Container(
-          width: 190,
-          height: 190,
-          decoration: BoxDecoration(
-            gradient: const LinearGradient(
-              colors: [Color(0xFF010505), Color(0xFF0E0450)],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            shape: BoxShape.circle,
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.35),
-                blurRadius: 18,
-                offset: const Offset(0, 8),
-              ),
-            ],
-          ),
-          child: ClipOval(
+    Widget _buildMobileLayout(ThemeData theme) {
+      return Column(
+        children: [
+          Container(
+            width: 180,
+            height: 180,
             child: Image.asset(
               'assets/images/logo.png',
-              fit: BoxFit.cover,
             ),
           ),
-        ),
 
-        const SizedBox(height: 18),
 
-        Text(
-          'ORION SCHEMATIC',
-          style: theme.textTheme.headlineSmall?.copyWith(
-            fontWeight: FontWeight.bold,
-            letterSpacing: 0.6,
+
+
+          const SizedBox(height: 18),
+
+        /*  Text(
+            'ORION SCHEMATIC',
+            style: theme.textTheme.headlineSmall?.copyWith(
+              fontWeight: FontWeight.bold,
+              letterSpacing: 0.6,
+            ),
           ),
-        ),
-        const SizedBox(height: 6),
-        Text('Tech Futuristic', style: theme.textTheme.bodyMedium),
-        const SizedBox(height: 22),
+          const SizedBox(height: 6),
+          Text('Tech Futuristic', style: theme.textTheme.bodyMedium),
+          const SizedBox(height: 22),
+  */
+          _buildLoginCard(theme),
+        ],
+      );
+    }
 
-        _buildLoginCard(theme),
-      ],
-    );
-  }
 
+    Widget _buildDesktopLayout(ThemeData theme) {
+      return Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            flex: 1,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Container(
+                  width: 230,
+                  height: 230,
 
-  Widget _buildDesktopLayout(ThemeData theme) {
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        Expanded(
-          flex: 1,
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Container(
-                width: 230,
-                height: 230,
-                decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    colors: [Color(0xFF010505), Color(0xFF0E0450)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.35),
-                      blurRadius: 22,
-                      offset: const Offset(0, 10),
-                    ),
-                  ],
-                ),
-                child: ClipOval(
                   child: Image.asset(
                     'assets/images/logo.png',
-                    fit: BoxFit.cover,
+
                   ),
                 ),
-              ),
-              const SizedBox(height: 20),
-              Text(
-                'ORION SCHEMATIC',
-                style: theme.textTheme.headlineMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                  letterSpacing: 1,
+
+                const SizedBox(height: 20),
+            /*    Text(
+                  'ORION SCHEMATIC',
+                  style: theme.textTheme.headlineMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
+                    letterSpacing: 1,
+                  ),
                 ),
-              ),
-              const SizedBox(height: 8),
-              Text(
-                'Tech Futuristic',
-                style: theme.textTheme.bodyLarge,
-              ),
-            ],
+                const SizedBox(height: 8),
+                Text(
+                  'Tech Futuristic',
+                  style: theme.textTheme.bodyLarge,
+                ),*/
+              ],
+            ),
           ),
-        ),
 
-        const SizedBox(width: 40),
+          const SizedBox(width: 40),
 
-        // Form Login
-        Expanded(
-          flex: 1,
-          child: _buildLoginCard(theme),
-        ),
-      ],
-    );
-  }
+          // Form Login
+          Expanded(
+            flex: 1,
+            child: _buildLoginCard(theme),
+          ),
+        ],
+      );
+    }
 
 
   final TextEditingController _email = TextEditingController();
@@ -192,7 +162,7 @@ class _LoginPageState extends State<LoginPage> {
     }
   }
 
-  @override
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -256,6 +226,7 @@ class _LoginPageState extends State<LoginPage> {
             children: [
 
               const SizedBox(height: 6),
+
               // Title
               Text(
                 "Welcome!",
